@@ -1,23 +1,65 @@
-;; load emacs 24's package system. Add MELPA repository.
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (add-to-list
-   'package-archives
-   ;; '("melpa" . "http://stable.melpa.org/packages/") ; many packages won't show if using stable
-   '("melpa" . "http://melpa.milkbox.net/packages/")
-   t))
+;; package --- Summary:
+;; --------------------
 
+(require 'package)
 
+;;; Repositories:
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+;;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+; Apparently needed for the package auto-complete (why?)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+(setq package-enable-at-startup nil)
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
+;; CONFIGURACION BASICA
+;; --------------------------------------------------
 
-;;yMCd
-(require 'ycmd)
+;; apaga el sonidito.
+(setq visible-bell t)
+
+;; show opening, closing parens
+(show-paren-mode)
+
+;; Line numbers
+;;; If `display-line-numbers-mode' is available (only in Emacs 26),
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+
+;; --------------------------------------------------
+
+(defvar myPackages
+  '(evil
+    ycmd
+    company-ycmd
+    flycheck-ycmd
+    clang-format
+    modern-cpp-font-lock
+    helm
+    yasnippet
+    powerline
+    ))
+
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
+;; Evil-mode
+(require 'evil)
+(evil-mode t)
+
+;; yMCd
 (add-hook 'after-init-hook #'global-ycmd-mode)
 
 (set-variable 'ycmd-server-command '("python" "/usr/share/ycmd/ycmd"))
@@ -51,36 +93,106 @@
 ;;YCMD KEY BINDINGS
 (global-set-key (kbd "C-c y") 'ycmd-goto) ; Ctrl+c t
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;               PYTHON               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Elpy
+(use-package elpy
+  :ensure t
+  :config
+  (elpy-enable)
+  (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt")
+  (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1))))
+
+;; use flycheck not flymake with elpy
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; Formatting
+(use-package py-autopep8
+  :ensure t
+  :hook (python-mode-hook . py-autopep8-enable-on-save))
+
+(define-key elpy-mode-map (kbd "C-c C-f") 'py-autopep8)
+  
+
+
+;; Docstrings
+(use-package sphinx-doc
+  :ensure t
+  :hook (python-mode . sphinx-doc-mode))
+
+(use-package python-docstring
+  :ensure t
+  :config (setq python-docstring-sentence-end-double-space nil)
+  :hook (python-mode . python-docstring-mode))
+
+
+;; --------------------------------------------------
+
+;; clang-format can be triggered using C-c C-f
+;; Create clang-format file using google style
+;; clang-format -style=google -dump-config > .clang-format
+(require 'clang-format)
+
+;; (if (equal major-mode 'c++-mode)
+;;     (global-set-key (kbd "C-c C-f") 'clang-format-region)
+;;   )
+				
+
+;;(global-set-key (kbd "C-c C-f") 'clang-format-region)
+;;(define-key c++-mode-map (kbd "C-c C-f") 'clang-format-region)
+(setq clang-format-style-option "Google")
+
+(require 'modern-cpp-font-lock)
+(modern-c++-font-lock-global-mode t)
+
+;; Helm
+(require 'helm-config)
+
+;;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+(global-set-key (kbd "C-x m") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+;;; YAsnippets
+(require 'yasnippet)
+(yas-global-mode 1)
+   
+
+;;; Barrita kawaii
+(require 'powerline)
+(powerline-center-evil-theme)
+
+;;; Themes
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
- '(compile-command "g++ -Wall -Wextra -Werror -o ")
  '(custom-enabled-themes (quote (tsdh-dark)))
+ '(custom-safe-themes
+   (quote
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(package-selected-packages
    (quote
-    (company-ycmd flycheck-ycmd ycmd modern-cpp-font-lock clang-format sml-mode)))
- '(show-paren-mode t))
+    (elpy geiser yasnippet-snippets yasnippet use-package sml-mode smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme modern-cpp-font-lock magit helm flycheck-ycmd evil-visual-mark-mode company-ycmd clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+;;(smart-mode-line-enable)
+    ;;(sml/setup)
 
 
-;; clang-format can be triggered using C-c C-f
-;; Create clang-format file using google style
-;; clang-format -style=google -dump-config > .clang-format
-(require 'clang-format)
-(global-set-key (kbd "C-c C-f") 'clang-format-region)
+(provide '.emacs)
 
-(require 'modern-cpp-font-lock)
-(modern-c++-font-lock-global-mode t)
-
-
+;;; .emacs ends here
