@@ -146,14 +146,11 @@
 ;; Create clang-format file using google style
 ;; clang-format -style=google -dump-config > .clang-format
 (require 'clang-format)
-
-;; (if (equal major-mode 'c++-mode)
-;;     (global-set-key (kbd "C-c C-f") 'clang-format-region)
-;;   )
-				
-
-;;(global-set-key (kbd "C-c C-f") 'clang-format-region)
-;;(define-key c++-mode-map (kbd "C-c C-f") 'clang-format-region)
+(add-hook
+     'c++-mode-hook
+      (lambda ()
+      (local-set-key (kbd "C-c C-f") #'clang-format-region)))
+;; Format style.
 (setq clang-format-style-option "Google")
 
 (require 'modern-cpp-font-lock)
