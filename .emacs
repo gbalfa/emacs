@@ -31,6 +31,9 @@
 ;; Show opening, closing parens
 (show-paren-mode)
 
+;; Insert matching delimiters.
+(electric-pair-mode)
+
 ;; Line numbers
 ;;; If `display-line-numbers-mode' is available (only in Emacs 26),
 (global-display-line-numbers-mode)
