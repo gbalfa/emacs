@@ -170,11 +170,6 @@
 (require 'yasnippet)
 (yas-global-mode 1)
    
-
-;;; Barrita kawaii
-;;(require 'powerline)
-;;(powerline-center-evil-theme)
-
 ;;; Themes
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
