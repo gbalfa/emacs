@@ -25,10 +25,10 @@
 ;; CONFIGURACION BASICA
 ;; --------------------------------------------------
 
-;; apaga el sonidito.
+;; Apaga el sonidito.
 (setq visible-bell t)
 
-;; show opening, closing parens
+;; Show opening, closing parens
 (show-paren-mode)
 
 ;; Line numbers
@@ -37,6 +37,8 @@
 (setq display-line-numbers-type 'relative)
 
 ;; --------------------------------------------------
+
+;; Una forma de instalar paquetes.
 
 (defvar myPackages
   '(evil
@@ -48,6 +50,7 @@
     helm
     yasnippet
     powerline
+    nyan-mode
     ))
 
 (mapc #'(lambda (package)
@@ -60,6 +63,7 @@
 (evil-mode t)
 
 ;; yMCd
+(require 'ycmd)
 (add-hook 'after-init-hook #'global-ycmd-mode)
 
 (set-variable 'ycmd-server-command '("python" "/usr/share/ycmd/ycmd"))
@@ -132,8 +136,9 @@
   :hook (python-mode . python-docstring-mode))
 
 
-;; --------------------------------------------------
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+					;          C family languages         ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; clang-format can be triggered using C-c C-f
 ;; Create clang-format file using google style
 ;; clang-format -style=google -dump-config > .clang-format
@@ -167,8 +172,8 @@
    
 
 ;;; Barrita kawaii
-(require 'powerline)
-(powerline-center-evil-theme)
+;;(require 'powerline)
+;;(powerline-center-evil-theme)
 
 ;;; Themes
 (custom-set-variables
@@ -182,16 +187,21 @@
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(package-selected-packages
    (quote
-    (elpy geiser yasnippet-snippets yasnippet use-package sml-mode smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme modern-cpp-font-lock magit helm flycheck-ycmd evil-visual-mark-mode company-ycmd clang-format))))
+    (nyan-mode elpy geiser yasnippet-snippets yasnippet use-package sml-mode smart-mode-line-powerline-theme smart-mode-line-atom-one-dark-theme modern-cpp-font-lock magit helm flycheck-ycmd evil-visual-mark-mode company-ycmd clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
 ;;(smart-mode-line-enable)
     ;;(sml/setup)
+`(mode-line ((t (:background "#11ADAD" :foreground "black" :box (:line-width 3 :color "grey30")))))
+)
 
+;; Nyan-cat!!!!!!!!!!!!!
+(nyan-mode t)
+(nyan-start-animation)
+(nyan-toggle-wavy-trail)
 
 (provide '.emacs)
 
