@@ -1,3 +1,4 @@
+;;Autor: Gabriel Badilla Alfaro.
 ;; package --- Summary:
 ;; --------------------
 
@@ -61,16 +62,34 @@
       (package-install package)))
       myPackages)
 
+;; Nyan-cat!!!!!!!!!!!!!
+(nyan-mode t)
+(nyan-start-animation)
+(nyan-toggle-wavy-trail)
+
 ;; Evil-mode
 (require 'evil)
 (evil-mode t)
 
-;; yMCd
+;; Helm
+(require 'helm-config)
+
+;;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+(global-set-key (kbd "C-x m") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+;;; YAsnippets
+(require 'yasnippet)
+(yas-global-mode 1)
+ 
+;; YCMD
 (require 'ycmd)
 (add-hook 'after-init-hook #'global-ycmd-mode)
 
 (set-variable 'ycmd-server-command '("python" "/usr/share/ycmd/ycmd"))
-
 
 ;;Completion
 (defun ycmd-setup-completion-at-point-function ()
@@ -101,7 +120,7 @@
 (global-set-key (kbd "C-c y") 'ycmd-goto) ; Ctrl+c t
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      ;               PYTHON               ;
+;               PYTHON               ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Elpy
@@ -125,8 +144,6 @@
   :hook (python-mode-hook . py-autopep8-enable-on-save))
 
 (define-key elpy-mode-map (kbd "C-c C-f") 'py-autopep8)
-  
-
 
 ;; Docstrings
 (use-package sphinx-doc
@@ -140,7 +157,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-					;          C family languages         ;
+;          C family languages         ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; clang-format can be triggered using C-c C-f
 ;; Create clang-format file using google style
@@ -156,20 +173,7 @@
 (require 'modern-cpp-font-lock)
 (modern-c++-font-lock-global-mode t)
 
-;; Helm
-(require 'helm-config)
-
-;;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-;;; YAsnippets
-(require 'yasnippet)
-(yas-global-mode 1)
-   
+  
 ;;; Themes
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -192,11 +196,6 @@
     ;;(sml/setup)
 `(mode-line ((t (:background "#11ADAD" :foreground "black" :box (:line-width 3 :color "grey30")))))
 )
-
-;; Nyan-cat!!!!!!!!!!!!!
-(nyan-mode t)
-(nyan-start-animation)
-(nyan-toggle-wavy-trail)
 
 (provide '.emacs)
 
